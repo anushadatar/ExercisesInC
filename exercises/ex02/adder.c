@@ -17,8 +17,18 @@ int MAX_AMOUNT=100;
 /* The maximum length of an individual integer a user can input. */
 int MAX_LENGTH=5;
 /* The maximum size of the input buffer. */
-int MAX_SIZE=20;
+int MAX_BUFFER_SIZE=20;
 
+
+/* Parses user input. 
+   
+   Returns integer value of the user input. Returns 0 and prints an error 
+   message if the length of the user input exceeds the value of the 
+   MAX_LENGTH specified in the constants. 
+
+   input[] : A list of characters input by the users.
+   returns : Integer parsed from input list or 0. 
+*/
 int process_user_input(char input[]) {
     if (strlen(input) > MAX_LENGTH) {
         printf("Input received is greater than maximum value. ");
@@ -28,14 +38,27 @@ int process_user_input(char input[]) {
     
 }
 
-
+/* Gets user input.
+   
+   Prompts user for input values for adding function until EOF received.
+   
+   numbers[] : An array to populate with values.
+   *current_index : A reference to a shared counter for the current index.
+   returns : A pointer to the first element of a populated array of integers
+             
+   This function will print an error message when the number's length exceeds
+   the perscribed number of digits or if the input is otherwise invalid.
+   However, it will continue going through and asking for input until the 
+   user triggers the EOF flag with Ctrl + D.
+    
+*/
 int * get_user_input(int numbers[], int *current_index) {
-    char input[MAX_AMOUNT];
+    char input[MAX_BUFFER_SIZE];
     int complete = 0;
     printf("Please enter the next number. Use Ctrl + D to quit. \n");
     while (!complete) {
         if (*current_index < MAX_AMOUNT) {
-            if (fgets(input, MAX_SIZE,stdin) == NULL) {
+            if (fgets(input, MAX_BUFFER_SIZE,stdin) == NULL) {
                 printf("Input complete. Computing sum of numbers.");
                 return numbers;
             }
