@@ -1,6 +1,7 @@
 #include "trout.h"
 #include "util.h"
 
+
 int main (int argc, char **argv)
 {
   int c;
