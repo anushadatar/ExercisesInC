@@ -1,3 +1,7 @@
+/* trout.c 
+Allen Downey's traceroute program, cleanup done 20 years later.
+*/
+
 #include "trout.h"
 #include "util.h"
 

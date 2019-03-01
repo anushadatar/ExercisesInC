@@ -1,3 +1,10 @@
+/* trout.h
+
+Header file for Allen Downey's traceroute program's traceroute-specific 
+functions and variables.
+
+*/
+
 #ifndef trout_h
 #define trout_h
 

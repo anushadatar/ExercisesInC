@@ -1,3 +1,8 @@
+/* util.c
+Utility functions originally associated with Allen Downey's traceroute 
+program, separated to facilitate reuse.
+*/
+
 #include "util.h"
 
 void err_doit (int errnoflag, int level, char *fmt, va_list ap)

@@ -1,3 +1,5 @@
+/* Main function associated with trout and necessary utility functions. */
+
 #include "trout.h"
 #include "util.h"
 

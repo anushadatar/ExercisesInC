@@ -1,3 +1,8 @@
+/* util.h
+
+Headers for reusable functions associated with Allen Downey's trout function.
+
+*/
 #ifndef util_h
 #define util_h
 
