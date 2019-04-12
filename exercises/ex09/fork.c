@@ -14,7 +14,11 @@ License: MIT License https://opensource.org/licenses/MIT
 #include <sys/types.h>
 #include <wait.h>
 
-
+// Shared global variable. Turns out this is shared throughout. Pretty wild.
+int sharedGlobalVariable = 0;
+// Pointer for shared dynamically-allocated variable. Turns out this one
+// is also shared throughout. The stack one we'll allocate later is not shared.
+int* sharedHeapVariable;
 // errno is an external global variable that contains
 // error information
 extern int errno;
@@ -32,6 +36,10 @@ double get_seconds() {
 
 void child_code(int i)
 {
+    printf("Shared global variable: %i", sharedGlobalVariable);
+    printf("Shared heap variable: %i", *sharedHeapVariable);
+    // We don't get this one.
+    // printf("Shared stack variable : %i", sharedStackVariable);
     sleep(i);
     printf("Hello from child %d.\n", i);
 }
@@ -45,6 +53,11 @@ int main(int argc, char *argv[])
     pid_t pid;
     double start, stop;
     int i, num_children;
+    
+    int sharedStackVariable = 0;
+    sharedHeapVariable = malloc(sizeof(int));
+    *sharedHeapVariable = 0;
+
 
     // the first command-line argument is the name of the executable.
     // if there is a second, it is the number of children to create.
@@ -79,7 +92,9 @@ int main(int argc, char *argv[])
 
     /* parent continues */
     printf("Hello from the parent.\n");
-
+    printf("Parent global variable: %i", sharedGlobalVariable);
+    printf("Parent heap variable: %i", *sharedHeapVariable);
+    printf("Parent stack variable: %i", sharedStackVariable);
     for (i=0; i<num_children; i++) {
         pid = wait(&status);
 
