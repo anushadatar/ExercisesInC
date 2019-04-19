@@ -77,7 +77,7 @@ void join_thread(pthread_t thread)
 void child_code(Shared *shared)
 {
     mutex_lock(shared->mutex);
-    printf("counter = %d\n", shared->counter);
+    //printf("counter = %d\n", shared->counter);
     shared->counter++;
     mutex_unlock(shared->mutex);
 }
@@ -106,6 +106,6 @@ int main()
         join_thread(child[i]);
     }
 
-    printf("Final value of counter is %d\n", shared->counter);
+    //printf("Final value of counter is %d\n", shared->counter);
     return 0;
 }

@@ -9,7 +9,9 @@ License: GNU GPLv3
 #include <stdlib.h>
 #include <pthread.h>
 
-#define NUM_CHILDREN 5
+/* As you increase the number of children, a lot of fun synchornization 
+errors happen! */
+#define NUM_CHILDREN 30
 
 /* Print an error message and exit.
 */
