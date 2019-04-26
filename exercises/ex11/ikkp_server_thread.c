@@ -133,11 +133,38 @@ int read_in(int socket, char *buf, int len)
 }
 
 char intro_msg[] = "Internet Knock-Knock Protocol Server\nKnock, knock.\n";
+/* 
+Execute thread associated with session.
+*/
+void* thread_execute(void *args) {
+	char buf[255];
+	int connect_d = (long) args;
 
+	if (say(connect_d, intro_msg) == -1) {
+            close(connect_d);
+            return;
+        }
+	
+	read_in(connect_d, buf, sizeof(buf));
+        // TODO (optional): check to make sure they said "Who's there?"
+
+        if (say(connect_d, "Surrealist giraffe.\n") == -1) {
+            close(connect_d);
+	        return;
+        }
+
+        read_in(connect_d, buf, sizeof(buf));
+        // TODO (optional): check to make sure they said "Surrealist giraffe who?"
+
+        if (say(connect_d, "Bathtub full of brightly-colored machine tools.\n") == -1) {
+            close(connect_d);
+	        return;
+        }
+
+        close(connect_d);
+}
 int main(int argc, char *argv[])
 {
-    char buf[255];
-
     // set up the signal handler
     if (catch_signal(SIGINT, handle_shutdown) == -1)
         error("Setting interrupt handler");
@@ -150,34 +177,15 @@ int main(int argc, char *argv[])
     if (listen(listener_d, 10) == -1)
         error("Can't listen");
 
-
-
     while (1) {
         printf("Waiting for connection on port %d\n", port);
+        pthread_t thread;
+        void* t;        
         int connect_d = open_client_socket();
+        // this time, it's a thread. Wild.
+       	pthread_create(&thread, NULL, thread_execute, (void*) connect_d);
 
-        if (say(connect_d, intro_msg) == -1) {
-            close(connect_d);
-            continue;
-        }
-
-        read_in(connect_d, buf, sizeof(buf));
-        // TODO (optional): check to make sure they said "Who's there?"
-
-        if (say(connect_d, "Surrealist giraffe.\n") == -1) {
-            close(connect_d);
-            continue;
-        }
-
-        read_in(connect_d, buf, sizeof(buf));
-        // TODO (optional): check to make sure they said "Surrealist giraffe who?"
-
-        if (say(connect_d, "Bathtub full of brightly-colored machine tools.\n") == -1) {
-            close(connect_d);
-            continue;
-        }
-
-        close(connect_d);
+        
     }
     return 0;
 }

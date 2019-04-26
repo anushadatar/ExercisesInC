@@ -14,7 +14,6 @@ Modified by Allen Downey.
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
-#include "pthread.h"
 
 int listener_d = 0;
 
@@ -160,24 +159,27 @@ int main(int argc, char *argv[])
             close(connect_d);
             continue;
         }
+        if (!fork()) {
+            close(listener_d);
+            read_in(connect_d, buf, sizeof(buf));
+            // TODO (optional): check to make sure they said "Who's there?"
 
-        read_in(connect_d, buf, sizeof(buf));
-        // TODO (optional): check to make sure they said "Who's there?"
+            if (say(connect_d, "Surrealist giraffe.\n") == -1) {
+                close(connect_d);
+                continue;
+            }
 
-        if (say(connect_d, "Surrealist giraffe.\n") == -1) {
-            close(connect_d);
-            continue;
+            read_in(connect_d, buf, sizeof(buf));
+            // TODO (optional): check to make sure they said "Surrealist giraffe who?"
+
+            if (say(connect_d, "Bathtub full of brightly-colored machine tools.\n") == -1) {
+                close(connect_d);
+                continue;
+            }
         }
-
-        read_in(connect_d, buf, sizeof(buf));
-        // TODO (optional): check to make sure they said "Surrealist giraffe who?"
-
-        if (say(connect_d, "Bathtub full of brightly-colored machine tools.\n") == -1) {
-            close(connect_d);
-            continue;
-        }
-
         close(connect_d);
+        exit(0);
     }
+    
     return 0;
 }
