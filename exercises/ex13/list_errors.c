@@ -178,6 +178,18 @@ Node *make_something() {
     return node3;
 }
 
+/* 
+    Frees all of the nodes in alist.
+    list = A pointer to pointer to the first node in the list.
+*/
+void free_list(Node** list) {
+    Node *curr = *list;
+    while (curr != NULL) {
+        Node* prev = curr;
+        curr = curr-> next;
+        free(prev);
+    }
+}
 
 int main() {
     // make a list of even numbers
@@ -207,7 +219,10 @@ int main() {
     print_list(&empty);
 
     Node *something = make_something();
-    free(something);
-
+    // Actually free each node or pointer.
+    free_list(&something);
+    free_list(&test_list);
+    free_list(&empty);
+    
     return 0;
 }
