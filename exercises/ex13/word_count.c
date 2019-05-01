@@ -56,6 +56,7 @@ void accumulator(gpointer key, gpointer value, gpointer user_data)
         (gpointer) pair,
         (GCompareDataFunc) compare_pair,
         NULL);
+    g_free(value);
 }
 
 /* Increments the frequency associated with key. */
@@ -71,6 +72,27 @@ void incr(GHashTable* hash, gchar *key)
         *val += 1;
     }
 }
+
+/*
+    Free a gpointer hash table pair.
+*/
+void free_pair_object(gpointer pair_info) 
+{
+    Pair *pair = (Pair*) pair_info;
+    g_free(pair);
+}
+
+/*
+Free gpointers associated with data. Has to be functionized because
+of course it does...
+*/
+void free_data(gpointer key, gpointer val, gpointer uid) 
+{
+    free(key);
+    free(val);
+    free(uid);
+}
+
 
 int main(int argc, char** argv)
 {
@@ -104,6 +126,7 @@ int main(int argc, char** argv)
         for (int i=0; array[i] != NULL; i++) {
             incr(hash, array[i]);
         }
+        g_strfreev(array);
     }
     fclose(fp);
 
@@ -111,11 +134,12 @@ int main(int argc, char** argv)
     // g_hash_table_foreach(hash, (GHFunc) kv_printor, "Word %s freq %d\n");
 
     // iterate the hash table and build the sequence
-    GSequence *seq = g_sequence_new(NULL);
+    GSequence *seq = g_sequence_new(free_pair_object);
     g_hash_table_foreach(hash, (GHFunc) accumulator, (gpointer) seq);
 
     // iterate the sequence and print the pairs
     g_sequence_foreach(seq, (GFunc) pair_printor, NULL);
+    g_hash_table_foreach(hash, (GHFunc)free_data, NULL);
 
     // try (unsuccessfully) to free everything
     g_hash_table_destroy(hash);
